@@ -78,16 +78,38 @@ If stuck after 15 iterations:
 
 ---
 
-## Iteration Limit Guidelines
+## Limit Guidelines: Iterations AND Time
 
-| Task Complexity | Examples | Suggested Limit |
-|-----------------|----------|-----------------|
+Ralph supports two types of limits. **Use both for best safety.**
+
+### Iteration Limits
+
+| Task Complexity | Examples | Suggested Iterations |
+|-----------------|----------|---------------------|
 | **Simple** | Fix typo, add config, small refactor | 5-10 |
 | **Medium** | Single feature with tests, bug fix requiring investigation | 15-25 |
 | **Complex** | Multi-file feature, API with validation | 30-50 |
 | **Large** | New project from scratch, major refactor | 50-100 |
 
-**Rule of thumb:** If unsure, start with 20 iterations. You can always run again.
+### Time Limits
+
+| Task Complexity | Examples | Suggested Time |
+|-----------------|----------|----------------|
+| **Simple** | Fix typo, add config, small refactor | 15-30 min |
+| **Medium** | Single feature with tests | 45-90 min |
+| **Complex** | Multi-file feature, API with validation | 2-3 hours |
+| **Large** | New project from scratch | 4-8 hours |
+
+### When to Use Which
+
+| Situation | Recommended Approach |
+|-----------|---------------------|
+| **Time-sensitive work** | Prioritize `--max-time` |
+| **Unknown complexity** | Use both limits |
+| **Running overnight** | Primarily use `--max-time` (e.g., `8h`) |
+| **Quick fixes** | `--max-iterations` alone is fine |
+
+**Rule of thumb:** If unsure, use both: `--max-iterations 20 --max-time 1h`
 
 ---
 
@@ -132,12 +154,14 @@ When complete:
 - All tests passing
 - Code is clean and documented
 
-If stuck after [N] iterations:
+If stuck after [N] iterations OR [TIME]:
 - Document blockers in BLOCKERS.md
 - Output: <promise>STUCK</promise>
 
 Output <promise>COMPLETE</promise> when done.
 ```
+
+**Suggested limits:** `--max-iterations 25 --max-time 90m`
 
 ### Template 2: Bug Fix
 
@@ -157,8 +181,14 @@ When complete:
 - Regression test added
 - All tests passing
 
+If stuck after [N] iterations OR [TIME]:
+- Document blockers in BLOCKERS.md
+- Output: <promise>STUCK</promise>
+
 Output <promise>COMPLETE</promise> when fixed.
 ```
+
+**Suggested limits:** `--max-iterations 15 --max-time 45m`
 
 ### Template 3: Refactoring
 
@@ -181,8 +211,14 @@ Process:
 4. Commit when green
 5. Repeat until goals met
 
+If stuck after [N] iterations OR [TIME]:
+- Document blockers in BLOCKERS.md
+- Output: <promise>STUCK</promise>
+
 Output <promise>COMPLETE</promise> when all goals achieved.
 ```
+
+**Suggested limits:** `--max-iterations 30 --max-time 2h`
 
 ---
 
@@ -192,18 +228,26 @@ Output <promise>COMPLETE</promise> when all goals achieved.
 **Problem:** "Make the code better"
 **Fix:** Define measurable outcomes
 
-### 2. No Iteration Limit
+### 2. No Limits Set
 **Problem:** Loop runs forever
-**Fix:** Always use `--max-iterations`
+**Fix:** Always use `--max-iterations` and/or `--max-time`
 
-### 3. No Escape Hatch
+### 3. Only One Type of Limit
+**Problem:** Iterations alone might let a slow task run for hours; time alone might cut off mid-iteration
+**Fix:** Use both limits together: `--max-iterations 25 --max-time 90m`
+
+### 4. No Escape Hatch
 **Problem:** Claude spins on impossible tasks
-**Fix:** Define what to do when stuck
+**Fix:** Define what to do when stuck (include both iteration AND time thresholds)
 
-### 4. Too Ambitious
+### 5. Too Ambitious
 **Problem:** Trying to build too much in one loop
 **Fix:** Break into smaller, focused loops
 
-### 5. No Automatic Verification
+### 6. No Automatic Verification
 **Problem:** No way to know if changes work
 **Fix:** Add tests, linting, or type checking
+
+### 7. Wrong Time Limit
+**Problem:** Time limit too short (cuts off mid-work) or too long (wastes resources)
+**Fix:** Use the guidelines table; when unsure, add 50% buffer to your estimate
